@@ -1,11 +1,13 @@
+'use strict';
+
 (function(){
     module.exports = class{
         constructor(log){
             this.log = log;
         }
 
-        handle(){
-
+        apply(event) {
+            this.Id = event.year;
         };
-    };
+    }
 })();
