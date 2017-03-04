@@ -28,11 +28,23 @@
 
     tape('Round added', (t) => {
         var events = [e('seasonCreated', {year:2016}),
-            e('roundAdded', {round:1})]
+            e('roundAdded', {round:1})];
         var season = new Season(log, events);
 
-        t.equal(1, season.rounds.length);
-        t.equal(1, season.rounds[0].round);
+        t.equal(season.rounds.length, 1);
+        t.equal(season.rounds[0].round, 1);
         t.end(); 
+    });
+
+    tape('Fixutre added', (t) => {
+        var events = [e('seasonCreated', {year:2016}),
+            e('roundAdded', {round:1}),
+            e('fixtureAdded', {round:1, home:'home', away:'away'})];
+
+        var season = new Season(log, events);
+
+        t.equal(season.rounds[0].fixtures.length, 1);
+
+        t.end();
     });
 })();

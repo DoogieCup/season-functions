@@ -17,7 +17,10 @@
                     this.applySeasonCreated(event);
                 break;
                 case 'roundAdded':
-                    this.applyRoundCreated(event);
+                    this.applyRoundAdded(event);
+                break;
+                case 'fixtureAdded':
+                    this.applyFixtureAdded(event);
                 break;
             }
         };
@@ -26,8 +29,16 @@
             this.Id = event.year;
         };
 
-        applyRoundCreated(event){
-            this.rounds.push({round:event.round});
+        applyRoundAdded(event){
+            this.rounds.push({round:event.round,fixtures:[]});
+        }
+
+        applyFixtureAdded(event){
+            var round = this.rounds.find(function(e) {
+                return e.round === event.round
+            }, this);
+
+            round.fixtures.push({home:event.home, away:event.away});
         }
     }
 })();
