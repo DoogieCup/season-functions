@@ -25,6 +25,12 @@
                 case 'teamSubmitted':
                     this.applyTeamSubmitted(event);
                 break;
+                case 'roundCompleted':
+                    this.applyRoundCompleted(event);
+                break;
+                case 'roundUncompleted':
+                    this.applyRoundUncompleted(event);
+                break;
                 default:
                     throw Error(`Didn't recognize event type ${event.eventType}`);
             }
@@ -50,6 +56,16 @@
             var round = this.findRound(event.round);
             round.teams.push({clubId: event.clubId,
                                 pickedPositions: event.pickedPositions});
+        }
+
+        applyRoundCompleted(event){
+            var round = this.findRound(event.round);
+            round.completed = true;
+        }
+
+        applyRoundUncompleted(event){
+            var round = this.findRound(event.round);
+            round.completed = false;
         }
 
         findRound(round){

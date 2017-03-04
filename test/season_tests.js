@@ -67,4 +67,25 @@
         t.equal(season.rounds[0].teams[0].pickedPositions.length, 2);
         t.end();
     });
+
+    tape('Round completed', (t) => {
+        var events = [e('seasonCreated', {year:2016}),
+            e('roundAdded', {round:1}),
+            e('roundCompleted', {round:1})];
+
+        var season = new Season(log, events);
+        t.equal(season.rounds[0].completed, true);
+        t.end();
+    });
+
+    tape('Round uncompleted', (t) => {
+        var events = [e('seasonCreated', {year:2016}),
+            e('roundAdded', {round:1}),
+            e('roundCompleted', {round:1}),
+            e('roundUncompleted', {round:1})];
+
+        var season = new Season(log, events);
+        t.equal(season.rounds[0].completed, false);
+        t.end();
+    });
 })();
