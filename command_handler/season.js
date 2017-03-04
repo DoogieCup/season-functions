@@ -22,6 +22,8 @@
                 case 'fixtureAdded':
                     this.applyFixtureAdded(event);
                 break;
+                default:
+                    throw Error(`Didn't recognize event type ${event.eventType}`);
             }
         };
 
@@ -30,15 +32,17 @@
         };
 
         applyRoundAdded(event){
-            this.rounds.push({round:event.round,fixtures:[]});
+            this.rounds.push({round:event.Round,fixtures:[]});
         }
 
         applyFixtureAdded(event){
             var round = this.rounds.find(function(e) {
-                return e.round === event.round
+                return e.round === event.RoundNumber
             }, this);
 
-            round.fixtures.push({home:event.home, away:event.away});
+            if (!round){throw Error(`Couldn't find round ${event.RoundNumber}`);}
+
+            round.fixtures.push({homeClub:event.HomeClub, awayClub:event.AwayClub});
         }
     }
 })();
