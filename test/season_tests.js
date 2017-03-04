@@ -27,7 +27,8 @@
     });
 
     tape('Round added', (t) => {
-        var events = [e('seasonCreated', {year:2016}),
+        var events = [
+            e('seasonCreated', {year:2016}),
             e('roundAdded', {round:1})];
         var season = new Season(log, events);
 
@@ -37,9 +38,13 @@
     });
 
     tape('Fixutre added', (t) => {
-        var events = [e('seasonCreated', {year:2016}),
+        var events = [
+            e('seasonCreated', {year:2016}),
             e('roundAdded', {round:1}),
-            e('fixtureAdded', {round:1, homeClubId:'home', awayClubId:'away'})];
+            e('fixtureAdded', {
+                round:1, 
+                homeClubId:'home', 
+                awayClubId:'away'})];
 
         var season = new Season(log, events);
 
@@ -51,11 +56,13 @@
     });
 
     tape('Team submitted', (t) =>{
-        var events = [e('seasonCreated', {year:2016}),
+        var events = [
+            e('seasonCreated', {year:2016}),
             e('roundAdded', {round:1}),
             e('fixtureAdded', {round:1, homeClubId:'home', awayClubId:'away'}),
             e('teamSubmitted', 
-                {round:1, 
+                {
+                    round:1, 
                     clubId: 'home', 
                     pickedPositions: [{playerId:'1', position:'f'},
                         {playerId:'2', position:'m'}]})];
@@ -69,7 +76,8 @@
     });
 
     tape('Round completed', (t) => {
-        var events = [e('seasonCreated', {year:2016}),
+        var events = [
+            e('seasonCreated', {year:2016}),
             e('roundAdded', {round:1}),
             e('roundCompleted', {round:1})];
 
@@ -79,13 +87,65 @@
     });
 
     tape('Round uncompleted', (t) => {
-        var events = [e('seasonCreated', {year:2016}),
+        var events = [
+            e('seasonCreated', {year:2016}),
             e('roundAdded', {round:1}),
             e('roundCompleted', {round:1}),
             e('roundUncompleted', {round:1})];
 
         var season = new Season(log, events);
         t.equal(season.rounds[0].completed, false);
+        t.end();
+    });
+
+    tape('Stats imported', (t) =>{
+        var events = [
+            e('seasonCreated', {year:2016}),
+            e('roundAdded', {round:1}),
+            e('statsImported', {
+                round:1, aflClubId:'cats',
+                stats:[
+                    {
+                        playerId:'first',
+                        goals: 1,
+                        behinds: 2,
+                        disposals: 3,
+                        marks: 4,
+                        hitouts: 5,
+                        tackles: 6,
+                        handballs: 7,
+                        goalAssists: 8,
+                        inside50s: 9,
+                        freesFor: 10,
+                        freesAgainst: 11
+                    },
+                    {
+                        playerId:'second',
+                        goals: 11,
+                        behinds: 12,
+                        disposals: 13,
+                        marks: 14,
+                        hitouts: 15,
+                        tackles: 16,
+                        handballs: 17,
+                        goalAssists: 18,
+                        inside50s: 19,
+                        freesFor: 20,
+                        freesAgainst: 21
+                    }
+                ]})];
+        var season = new Season(log, events);
+
+        var stats = season.rounds[0].stats;
+        t.equal(season.rounds[0].stats.length, 2);
+        t.equal(stats[0].aflClubId, 'cats');
+        t.equal(stats[1].aflClubId, 'cats');
+
+        t.equal(stats[0].playerId, 'first');
+        t.equal(stats[1].playerId, 'second');
+
+        t.equal(stats[0].goals, 1);
+        t.equal(stats[1].goals, 11);
         t.end();
     });
 })();

@@ -31,6 +31,9 @@
                 case 'roundUncompleted':
                     this.applyRoundUncompleted(event);
                 break;
+                case 'statsImported':
+                    this.applyStatsImported(event);
+                break;
                 default:
                     throw Error(`Didn't recognize event type ${event.eventType}`);
             }
@@ -41,9 +44,11 @@
         };
 
         applyRoundAdded(event){
-            this.rounds.push({round:event.round,
+            this.rounds.push({
+                round:event.round,
                 fixtures:[],
-                teams: []});
+                teams: [],
+                stats:[]});
         }
 
         applyFixtureAdded(event){
@@ -66,6 +71,18 @@
         applyRoundUncompleted(event){
             var round = this.findRound(event.round);
             round.completed = false;
+        }
+
+        applyStatsImported(event){
+            var round = this.findRound(event.round);
+
+            event.stats.forEach(function(s){
+                round.stats.push({
+                    aflClubId: event.aflClubId,
+                    playerId: s.playerId,
+                    goals: s.goals
+                });
+            }, this);
         }
 
         findRound(round){
