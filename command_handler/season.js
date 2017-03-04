@@ -32,17 +32,17 @@
         };
 
         applyRoundAdded(event){
-            this.rounds.push({round:event.Round,fixtures:[]});
+            this.rounds.push({round:event.round,fixtures:[]});
         }
 
         applyFixtureAdded(event){
             var round = this.rounds.find(function(e) {
-                return e.round === event.RoundNumber
+                return e.round === event.round
             }, this);
 
-            if (!round){throw Error(`Couldn't find round ${event.RoundNumber}`);}
+            if (!round){throw Error(`Couldn't find round ${event.round}`);}
 
-            round.fixtures.push({homeClub:event.HomeClub, awayClub:event.AwayClub});
+            round.fixtures.push({homeClubId:event.homeClubId, awayClubId:event.awayClubId});
         }
     }
 })();
