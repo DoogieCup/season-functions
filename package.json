@@ -1,0 +1,23 @@
+{
+  "name": "season-functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node node_modules/tape/bin/tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DoogieCup/season-functions.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DoogieCup/season-functions/issues"
+  },
+  "homepage": "https://github.com/DoogieCup/season-functions#readme",
+  "devDependencies": {
+    "sinon": "^1.17.7",
+    "tape": "^4.6.3"
+  }
+}
