@@ -19,5 +19,8 @@
   "devDependencies": {
     "sinon": "^1.17.7",
     "tape": "^4.6.3"
+  },
+  "dependencies": {
+    "azure-storage": "^2.1.0"
   }
 }
