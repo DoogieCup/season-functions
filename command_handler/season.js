@@ -46,9 +46,10 @@
         applyRoundAdded(event){
             this.rounds.push({
                 round:event.round,
+                normalRound:event.normalRound,
                 fixtures:[],
                 teams: [],
-                stats:[]});
+                stats: []});
         }
 
         applyFixtureAdded(event){
@@ -76,13 +77,10 @@
         applyStatsImported(event){
             var round = this.findRound(event.round);
 
-            event.stats.forEach(function(s){
-                round.stats.push({
-                    aflClubId: event.aflClubId,
-                    playerId: s.playerId,
-                    goals: s.goals
-                });
-            }, this);
+            //event.stats.forEach(function(s){
+                var stat = {aflClubId: event.aflClubId, stats: event.stats}
+                round.stats.push(stat);
+            //}, this);
         }
 
         findRound(round){
