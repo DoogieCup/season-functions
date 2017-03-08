@@ -2,6 +2,7 @@
     module.exports = function(context) {
 
         let azure = require('azure-storage');
+        var Season = require('./season.js');
 
         let connectionString = process.env.AzureWebJobsDashboard;
         let tableService = azure.createTableService(connectionString);
@@ -16,6 +17,7 @@
             }
 
             context.log('Results: ' + JSON.stringify(result));
+            context.log(new Season(context.log, result.entries));
 
             context.done();
         });

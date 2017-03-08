@@ -12,27 +12,28 @@
         }
 
         apply(event) {
-            switch (event.eventType){
+            var payload = event.payload['_'];
+            switch (event.eventType['_']){
                 case 'seasonCreated':
-                    this.applySeasonCreated(event);
+                    this.applySeasonCreated(payload);
                 break;
                 case 'roundAdded':
-                    this.applyRoundAdded(event);
+                    this.applyRoundAdded(payload);
                 break;
                 case 'fixtureAdded':
-                    this.applyFixtureAdded(event);
+                    this.applyFixtureAdded(payload);
                 break;
                 case 'teamSubmitted':
-                    this.applyTeamSubmitted(event);
+                    this.applyTeamSubmitted(payload);
                 break;
                 case 'roundCompleted':
-                    this.applyRoundCompleted(event);
+                    this.applyRoundCompleted(payload);
                 break;
                 case 'roundUncompleted':
-                    this.applyRoundUncompleted(event);
+                    this.applyRoundUncompleted(payload);
                 break;
                 case 'statsImported':
-                    this.applyStatsImported(event);
+                    this.applyStatsImported(payload);
                 break;
                 default:
                     throw Error(`Didn't recognize event type ${event.eventType}`);
