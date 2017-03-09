@@ -8,8 +8,13 @@
     var log = (msg) => {console.log(msg);}
 
     function e(name, event){
-        event.eventType = name;
-        return event;
+
+        var newEvent = {};
+
+        newEvent.payload = {_: event};
+        newEvent.eventType = {_: name};
+
+        return newEvent;
     }
 
     tape('Constructor does now throw', (t) => {
@@ -137,15 +142,14 @@
         var season = new Season(log, events);
 
         var stats = season.rounds[0].stats;
-        t.equal(season.rounds[0].stats.length, 2);
-        t.equal(stats[0].aflClubId, 'cats');
-        t.equal(stats[1].aflClubId, 'cats');
+        t.equal(season.rounds[0].stats.length, 1);
+        t.equal(season.rounds[0].stats[0].stats.length, 2);
 
-        t.equal(stats[0].playerId, 'first');
-        t.equal(stats[1].playerId, 'second');
+        t.equal(stats[0].stats[0].playerId, 'first');
+        t.equal(stats[0].stats[1].playerId, 'second');
 
-        t.equal(stats[0].goals, 1);
-        t.equal(stats[1].goals, 11);
+        t.equal(stats[0].stats[0].goals, 1);
+        t.equal(stats[0].stats[1].goals, 11);
         t.end();
     });
 })();

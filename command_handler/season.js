@@ -12,27 +12,28 @@
         }
 
         apply(event) {
-            switch (event.eventType){
+            var payload = event.payload['_'];
+            switch (event.eventType['_']){
                 case 'seasonCreated':
-                    this.applySeasonCreated(event);
+                    this.applySeasonCreated(payload);
                 break;
                 case 'roundAdded':
-                    this.applyRoundAdded(event);
+                    this.applyRoundAdded(payload);
                 break;
                 case 'fixtureAdded':
-                    this.applyFixtureAdded(event);
+                    this.applyFixtureAdded(payload);
                 break;
                 case 'teamSubmitted':
-                    this.applyTeamSubmitted(event);
+                    this.applyTeamSubmitted(payload);
                 break;
                 case 'roundCompleted':
-                    this.applyRoundCompleted(event);
+                    this.applyRoundCompleted(payload);
                 break;
                 case 'roundUncompleted':
-                    this.applyRoundUncompleted(event);
+                    this.applyRoundUncompleted(payload);
                 break;
                 case 'statsImported':
-                    this.applyStatsImported(event);
+                    this.applyStatsImported(payload);
                 break;
                 default:
                     throw Error(`Didn't recognize event type ${event.eventType}`);
@@ -46,9 +47,10 @@
         applyRoundAdded(event){
             this.rounds.push({
                 round:event.round,
+                normalRound:event.normalRound,
                 fixtures:[],
                 teams: [],
-                stats:[]});
+                stats: []});
         }
 
         applyFixtureAdded(event){
@@ -76,13 +78,10 @@
         applyStatsImported(event){
             var round = this.findRound(event.round);
 
-            event.stats.forEach(function(s){
-                round.stats.push({
-                    aflClubId: event.aflClubId,
-                    playerId: s.playerId,
-                    goals: s.goals
-                });
-            }, this);
+            //event.stats.forEach(function(s){
+                var stat = {aflClubId: event.aflClubId, stats: event.stats}
+                round.stats.push(stat);
+            //}, this);
         }
 
         findRound(round){
