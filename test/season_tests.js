@@ -11,7 +11,7 @@
 
         var newEvent = {};
 
-        newEvent.payload = {_: event};
+        newEvent.payload = {_: JSON.stringify(event)};
         newEvent.eventType = {_: name};
 
         return newEvent;

@@ -12,7 +12,7 @@
         }
 
         apply(event) {
-            var payload = event.payload['_'];
+            var payload = JSON.parse(event.payload['_']);
             switch (event.eventType['_']){
                 case 'seasonCreated':
                     this.applySeasonCreated(payload);
