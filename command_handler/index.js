@@ -8,7 +8,6 @@
         let tableService = azure.createTableService(connectionString);
 
         var query = new azure.TableQuery()
-            .top(5)
             .where('PartitionKey eq ?', '2008');
 
         tableService.queryEntities('SeasonEvents', query, null, function(error, result, response) {
@@ -16,7 +15,7 @@
                 throw Error(error);
             }
 
-            context.log('Results: ' + JSON.stringify(result));
+            context.log('Final object:');
             context.log(new Season(context.log, result.entries));
 
             context.done();

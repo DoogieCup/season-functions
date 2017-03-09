@@ -3,7 +3,7 @@
 (function(){
     module.exports = class{
         constructor(log, events){
-            this.log = log;
+            var log = log;
             this.rounds = [];
 
             events.forEach(function(event) {
