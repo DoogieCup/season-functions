@@ -7,24 +7,37 @@
 
     var log = (msg) => {console.log(msg);}
 
-    function e(name, event){
-
+    function createEvent(name, event, version){
+        log(`Creating event: ${name} ${JSON.stringify(event)} Version ${version}`);
         var newEvent = {};
 
         newEvent.payload = {_: JSON.stringify(event)};
         newEvent.eventType = {_: name};
+        newEvent.version = {_: version};
 
         return newEvent;
     }
 
+    function e(events)
+    {
+        var version = 1;
+        var returns = [];
+        log(`Events ${JSON.stringify(events)}`);
+        events.forEach(function(event) {
+             returns.push(createEvent(event.name, event.event, version++));
+        }, this);
+
+        return returns;
+    }
+
     tape('Constructor does now throw', (t) => {
-        t.plan(1);
         t.doesNotThrow(() => {var season = new Season(log, []);});
+        t.end();
     });
 
     tape('Season created', (t) => {
-        var event = e('seasonCreated', {year:2016});
-        var season = new Season(log, [event]);
+        var events = e([{name:'seasonCreated', event:{year:2016}}]);
+        var season = new Season(log, events);
 
         t.equal(season.Id, 2016);
 
@@ -32,9 +45,10 @@
     });
 
     tape('Round added', (t) => {
-        var events = [
-            e('seasonCreated', {year:2016}),
-            e('roundAdded', {round:1})];
+        var events = e([
+            {name:'seasonCreated', event:{year:2016}},
+            {name:'roundAdded', event:{round:1}}]);
+
         var season = new Season(log, events);
 
         t.equal(season.rounds.length, 1);
@@ -43,13 +57,13 @@
     });
 
     tape('Fixutre added', (t) => {
-        var events = [
-            e('seasonCreated', {year:2016}),
-            e('roundAdded', {round:1}),
-            e('fixtureAdded', {
+        var events = e([
+            {name:'seasonCreated', event: {year:2016}},
+            {name:'roundAdded', event:{round:1}},
+            {name: 'fixtureAdded', event:{
                 round:1, 
                 homeClubId:'home', 
-                awayClubId:'away'})];
+                awayClubId:'away'}}]);
 
         var season = new Season(log, events);
 
@@ -61,16 +75,16 @@
     });
 
     tape('Team submitted', (t) =>{
-        var events = [
-            e('seasonCreated', {year:2016}),
-            e('roundAdded', {round:1}),
-            e('fixtureAdded', {round:1, homeClubId:'home', awayClubId:'away'}),
-            e('teamSubmitted', 
-                {
+        var events = e([
+            {name:'seasonCreated', event:{year:2016}},
+            {name:'roundAdded', event:{round:1}},
+            {name:'fixtureAdded', event:{round:1, homeClubId:'home', awayClubId:'away'}},
+            {name:'teamSubmitted', 
+                event: {
                     round:1, 
                     clubId: 'home', 
                     pickedPositions: [{playerId:'1', position:'f'},
-                        {playerId:'2', position:'m'}]})];
+                        {playerId:'2', position:'m'}]}}]);
 
         var season = new Season(log, events);
 
@@ -81,10 +95,10 @@
     });
 
     tape('Round completed', (t) => {
-        var events = [
-            e('seasonCreated', {year:2016}),
-            e('roundAdded', {round:1}),
-            e('roundCompleted', {round:1})];
+        var events = e([
+            {name:'seasonCreated', event:{year:2016}},
+            {name:'roundAdded', event:{round:1}},
+            {name: 'roundCompleted', event:{round:1}}]);
 
         var season = new Season(log, events);
         t.equal(season.rounds[0].completed, true);
@@ -92,11 +106,11 @@
     });
 
     tape('Round uncompleted', (t) => {
-        var events = [
-            e('seasonCreated', {year:2016}),
-            e('roundAdded', {round:1}),
-            e('roundCompleted', {round:1}),
-            e('roundUncompleted', {round:1})];
+        var events = e([
+            {name: 'seasonCreated', event:{year:2016}},
+            {name:'roundAdded', event:{round:1}},
+            {name:'roundCompleted', event:{round:1}},
+            {name:'roundUncompleted', event:{round:1}}]);
 
         var season = new Season(log, events);
         t.equal(season.rounds[0].completed, false);
@@ -104,10 +118,10 @@
     });
 
     tape('Stats imported', (t) =>{
-        var events = [
-            e('seasonCreated', {year:2016}),
-            e('roundAdded', {round:1}),
-            e('statsImported', {
+        var events = e([
+            {name:'seasonCreated', event:{year:2016}},
+            {name:'roundAdded', event:{round:1}},
+            {name:'statsImported', event:{
                 round:1, aflClubId:'cats',
                 stats:[
                     {
@@ -138,7 +152,7 @@
                         freesFor: 20,
                         freesAgainst: 21
                     }
-                ]})];
+                ]}}]);
         var season = new Season(log, events);
 
         var stats = season.rounds[0].stats;

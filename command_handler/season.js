@@ -3,21 +3,39 @@
 (function(){
     module.exports = class{
         constructor(log, events){
-            var log = log;
+            this.log = log;
             this.rounds = [];
+            this.eventHandler = (event) => {};
 
-            events.forEach(function(event) {
-                this.apply(event);
-            }, this);
-        }
+            if (events)  {
+                events.forEach(function(event) {
+                    this.apply(event);
+                }, this);
+            }
+        };
+
+        create(year){
+            if (this.Id)
+            {
+                throw Err('Season already exists.');
+            }
+
+            this.Id = year;
+            this.eventHandler({
+                eventType: 'seasonCreated',
+                year: year
+            });
+        };
 
         apply(event) {
             var payload = JSON.parse(event.payload['_']);
             switch (event.eventType['_']){
                 case 'seasonCreated':
+                    this.log(`Applying season created ${JSON.stringify(payload)}`);
                     this.applySeasonCreated(payload);
                 break;
                 case 'roundAdded':
+                    this.log(`Applying round added ${JSON.stringify(payload)}`);
                     this.applyRoundAdded(payload);
                 break;
                 case 'fixtureAdded':
@@ -78,10 +96,8 @@
         applyStatsImported(event){
             var round = this.findRound(event.round);
 
-            //event.stats.forEach(function(s){
-                var stat = {aflClubId: event.aflClubId, stats: event.stats}
-                round.stats.push(stat);
-            //}, this);
+            var stat = {aflClubId: event.aflClubId, stats: event.stats}
+            round.stats.push(stat);
         }
 
         findRound(round){
