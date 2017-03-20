@@ -6,14 +6,27 @@
 
     var log = (msg) => {console.log(msg);}
 
-    function e(name, event){
-
+    function createEvent(name, event, version){
+        log(`Creating event: ${name} ${JSON.stringify(event)} Version ${version}`);
         var newEvent = {};
 
         newEvent.payload = {_: JSON.stringify(event)};
         newEvent.eventType = {_: name};
+        newEvent.version = {_: version};
 
         return newEvent;
+    }
+
+    function e(events)
+    {
+        var version = 1;
+        var returns = [];
+        log(`Events ${JSON.stringify(events)}`);
+        events.forEach(function(event) {
+             returns.push(createEvent(event.name, event.event, version++));
+        }, this);
+
+        return returns;
     }
 
     tape('No events has empty season', (t) => {
@@ -37,8 +50,8 @@
     });
 
     tape('Creating a season that already exists throws', (t) => {
-        var events = [
-            e('seasonCreated', {year:2016})];
+        var events = e([
+            {name:'seasonCreated', event:{year:2016}}]);
         var season = new Season(log, events);
         t.throws(() => {season.create(2016);});
         t.end();
