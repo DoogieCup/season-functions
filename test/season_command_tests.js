@@ -1,6 +1,7 @@
 'use strict';
 (function(){
     var tape = require('tape');
+    var sinon = require('sinon');
     
     var Season = require('../command_handler/season.js');
 
@@ -54,6 +55,19 @@
             {name:'seasonCreated', event:{year:2016}}]);
         var season = new Season(log, events);
         t.throws(() => {season.create(2016);});
+        t.end();
+    });
+
+    tape('Creating a season which conflicts on write throws', (t) => {
+        var season = new Season(log);
+        season.eventHandler = (event, callback) => {
+            callback({
+                error: "DuplicateEntity"
+            });
+        };
+
+        t.throws(() => {season.create(2016);});
+
         t.end();
     });
 })();

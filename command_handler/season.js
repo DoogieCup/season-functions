@@ -21,9 +21,16 @@
             }
 
             this.Id = year;
-            this.eventHandler({
+            var event = {
                 eventType: 'seasonCreated',
                 year: year
+            };
+
+            this.eventHandler(event, (error) => {
+                if (error) {
+                    this.log(`Failed to raise event ${JSON.stringify(event)}\n${JSON.stringify(error)}`);
+                    throw error;
+                }
             });
         };
 
