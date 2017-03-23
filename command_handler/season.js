@@ -28,7 +28,8 @@
             var event = {
                 eventType: 'seasonCreated',
                 year: season,
-                payload: {year: season}
+                payload: {year: season},
+                version: this.version++
             };
 
             this.eventHandler(event, (error) => {

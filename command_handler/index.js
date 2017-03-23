@@ -24,17 +24,19 @@
             season.eventHandler = (event, errorcb) => {
                 context.log(`Storing event ${JSON.stringify(event)}`);
 
-                // var newEvent = {
-                //     PartitionKey: entGen.String(''),
-                //     RowKey: entGen.String(),
-                //     eventType: event.eventType,
-                //     payload: JSON.stringify(event)
-                // };
+                var newEvent = {
+                    PartitionKey: entGen.String(String(event.year)),
+                    RowKey: entGen.String(String(event.version)),
+                    eventType: event.eventType,
+                    payload: JSON.stringify(event)
+                };
 
-                // tableService.insertEntity('SeasonEvents',
-                //     )
+                context.log(`Inserting event:\n${newEvent}`);
 
-                errorcb(null);
+                tableService.insertEntity('SeasonEvents',
+                    newEvent, function(error, result, response){
+                        errorcb(error);
+                    });
             };
 
             switch (commandName){
