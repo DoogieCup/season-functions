@@ -13,7 +13,7 @@
 
         newEvent.payload = {_: JSON.stringify(event)};
         newEvent.eventType = {_: name};
-        newEvent.version = {_: version};
+        newEvent.RowKey = {_: version};
 
         return newEvent;
     }
@@ -40,6 +40,7 @@
         var season = new Season(log, events);
 
         t.equal(season.Id, 2016);
+        t.equal(season.version, 1);
 
         t.end();
     });
@@ -53,6 +54,7 @@
 
         t.equal(season.rounds.length, 1);
         t.equal(season.rounds[0].round, 1);
+        t.equal(season.version, 2);
         t.end(); 
     });
 
@@ -70,7 +72,7 @@
         t.equal(season.rounds[0].fixtures.length, 1);
         t.equal(season.rounds[0].fixtures[0].homeClubId, 'home');
         t.equal(season.rounds[0].fixtures[0].awayClubId, 'away');
-
+        t.equal(season.version, 3);
         t.end();
     });
 
@@ -91,6 +93,7 @@
         t.equal(season.rounds[0].teams.length, 1);
         t.equal(season.rounds[0].teams[0].clubId, 'home');
         t.equal(season.rounds[0].teams[0].pickedPositions.length, 2);
+        t.equal(season.version, 4);
         t.end();
     });
 
@@ -102,6 +105,7 @@
 
         var season = new Season(log, events);
         t.equal(season.rounds[0].completed, true);
+        t.equal(season.version, 3);
         t.end();
     });
 
@@ -114,6 +118,7 @@
 
         var season = new Season(log, events);
         t.equal(season.rounds[0].completed, false);
+        t.equal(season.version, 4);
         t.end();
     });
 
@@ -164,6 +169,7 @@
 
         t.equal(stats[0].stats[0].goals, 1);
         t.equal(stats[0].stats[1].goals, 11);
+        t.equal(season.version, 3);
         t.end();
     });
 })();

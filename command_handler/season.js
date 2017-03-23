@@ -6,10 +6,13 @@
             this.log = log;
             this.rounds = [];
             this.eventHandler = (event) => {};
+            this.version = 0;
 
             if (events)  {
                 events.forEach(function(event) {
+                    this.log(`Received event ${JSON.stringify(event)}`);
                     this.apply(event);
+                    this.version = event.RowKey['_'];
                 }, this);
             }
         };
@@ -24,7 +27,8 @@
             this.Id = season;
             var event = {
                 eventType: 'seasonCreated',
-                year: season
+                year: season,
+                payload: {year: season}
             };
 
             this.eventHandler(event, (error) => {

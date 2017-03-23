@@ -13,7 +13,7 @@
 
         newEvent.payload = {_: JSON.stringify(event)};
         newEvent.eventType = {_: name};
-        newEvent.version = {_: version};
+        newEvent.RowKey = {_: version};
 
         return newEvent;
     }
