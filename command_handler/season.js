@@ -5,19 +5,50 @@
         constructor(log, events){
             this.log = log;
             this.rounds = [];
+            this.eventHandler = (event) => {};
+            this.version = 0;
 
-            events.forEach(function(event) {
-                this.apply(event);
-            }, this);
-        }
+            if (events)  {
+                events.forEach(function(event) {
+                    this.log(`Received event ${JSON.stringify(event)}`);
+                    this.apply(event);
+                    this.version = event.RowKey['_'];
+                }, this);
+            }
+        };
+
+        create(season){
+            this.log(`Processing season ${season}`);
+            if (this.Id)
+            {
+                throw Error(`Season already exists. ${JSON.stringify(this)}`);
+            }
+
+            this.Id = season;
+            var event = {
+                eventType: 'seasonCreated',
+                year: season,
+                payload: {year: season},
+                version: this.version++
+            };
+
+            this.eventHandler(event, (error) => {
+                if (error) {
+                    this.log(`Failed to raise event ${event}\n${JSON.stringify(error)}`);
+                    throw Error(error);
+                }
+            });
+        };
 
         apply(event) {
-            var payload = event.payload['_'];
+            var payload = JSON.parse(event.payload['_']);
             switch (event.eventType['_']){
                 case 'seasonCreated':
+                    this.log(`Applying season created ${JSON.stringify(payload)}`);
                     this.applySeasonCreated(payload);
                 break;
                 case 'roundAdded':
+                    this.log(`Applying round added ${JSON.stringify(payload)}`);
                     this.applyRoundAdded(payload);
                 break;
                 case 'fixtureAdded':
@@ -78,10 +109,8 @@
         applyStatsImported(event){
             var round = this.findRound(event.round);
 
-            //event.stats.forEach(function(s){
-                var stat = {aflClubId: event.aflClubId, stats: event.stats}
-                round.stats.push(stat);
-            //}, this);
+            var stat = {aflClubId: event.aflClubId, stats: event.stats}
+            round.stats.push(stat);
         }
 
         findRound(round){
