@@ -14,22 +14,23 @@
             }
         };
 
-        create(year){
+        create(season){
+            this.log(`Processing season ${season}`);
             if (this.Id)
             {
-                throw Err('Season already exists.');
+                throw Error(`Season already exists. ${JSON.stringify(this)}`);
             }
 
-            this.Id = year;
+            this.Id = season;
             var event = {
                 eventType: 'seasonCreated',
-                year: year
+                year: season
             };
 
             this.eventHandler(event, (error) => {
                 if (error) {
-                    this.log(`Failed to raise event ${JSON.stringify(event)}\n${JSON.stringify(error)}`);
-                    throw error;
+                    this.log(`Failed to raise event ${event}\n${JSON.stringify(error)}`);
+                    throw Error(error);
                 }
             });
         };
