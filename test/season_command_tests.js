@@ -40,13 +40,14 @@
     tape('Season create command sets Id and raises event', (t) => {
         var season = new Season(log);
         var raisedEvents = [];
-        season.eventHandler = (event) => {raisedEvents.push(event)};
+        season.eventHandler = (event, errorcb) => {raisedEvents.push(event); errorcb(null);};
         t.doesNotThrow(() => {season.create(2015);});
         t.equal(season.Id, 2015);
         t.equal(raisedEvents.length, 1);
         var event = raisedEvents[0];
         t.equal(event.eventType, 'seasonCreated');
         t.equal(event.year, 2015);
+        t.equal(season.version, 1);
         t.end();
     });
 
@@ -55,6 +56,7 @@
             {name:'seasonCreated', event:{year:2016}}]);
         var season = new Season(log, events);
         t.throws(() => {season.create(2016);});
+        t.equal(season.version, 1);
         t.end();
     });
 
@@ -67,7 +69,7 @@
         };
 
         t.throws(() => {season.create(2016);});
-
+        t.equal(season.version, 0);
         t.end();
     });
 })();

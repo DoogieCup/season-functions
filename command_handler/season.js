@@ -29,7 +29,7 @@
                 eventType: 'seasonCreated',
                 year: season,
                 payload: {year: season},
-                version: this.version++
+                version: this.version + 1
             };
 
             this.eventHandler(event, (error) => {
@@ -37,6 +37,7 @@
                     this.log(`Failed to raise event ${event}\n${JSON.stringify(error)}`);
                     throw Error(error);
                 }
+                this.version++;
             });
         };
 
