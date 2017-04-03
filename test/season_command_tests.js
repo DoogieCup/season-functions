@@ -72,4 +72,24 @@
         t.equal(season.version, 0);
         t.end();
     });
+
+    tape('Adding a round to non-existent season throws', (t) => {
+        var season = new Season(log);
+        t.throws(() => {season.addRound(1)});
+        t.end();
+    });
+
+    tape('Adding a round raises event', (t) => {
+        var events = e([{name: 'seasonCreated', event:{year:2016}}]);
+        var season = new Season(log, events);
+        season.eventHandler = (event, callback) => {
+            t.equal(event.eventType, 'roundAdded');
+            t.equal(event.year, 2016);
+            t.equal(event.version, 2);
+            t.equal(event.payload.round, 1);
+            callback();
+        };
+        season.addRound(1);
+        t.end();
+    });
 })();

@@ -41,6 +41,28 @@
             });
         };
 
+        addRound(round){
+            if (!this.Id){
+                throw Error(`Cannot add round to non-existent season`);
+            }
+            this.log(`Adding round ${round}`);
+
+            var event = {
+                eventType: 'roundAdded',
+                year: this.Id,
+                payload: {round: round},
+                version: this.version + 1
+            };
+
+            this.eventHandler(event, (error)=>{
+                if (error) {
+                    this.log(`Failed to raise event ${event}\n${JSON.stringify(error)}`);
+                    throw Error(error);
+                }
+                this.version++;
+            });
+        }
+
         apply(event) {
             var payload = JSON.parse(event.payload['_']);
             switch (event.eventType['_']){
