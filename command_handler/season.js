@@ -47,6 +47,11 @@
             }
             this.log(`Adding round ${round}`);
 
+            var existingRound = this.findRound(round, false);
+            if (existingRound){
+                throw Error(`Round ${round} already exists in season ${this.Id}`);
+            }
+
             var event = {
                 eventType: 'roundAdded',
                 year: this.Id,
@@ -136,7 +141,7 @@
             round.stats.push(stat);
         }
 
-        findRound(round){
+        findRound(round, throwOnNotFound = true){
             if (!round){
                 throw Error(`Asked to find a round but no number supplied`);
             }
@@ -145,7 +150,7 @@
                 return r.round === round;
             }, this);
 
-            if (!round){throw Error(`Couldn't find round ${round}`);}
+            if (!round && throwOnNotFound){throw Error(`Couldn't find round ${round}`);}
 
             return round;
         }

@@ -92,4 +92,20 @@
         season.addRound(1);
         t.end();
     });
+
+    tape('Adding a duplicate round throws', (t) => {
+        var events = e([
+            {name: 'seasonCreated', event:{year:2016}},
+            {name: 'roundAdded', event:{round:1}}]);
+        var season = new Season(log, events);
+        season.eventHandler = (event, callback) => {
+            t.equal(event.eventType, 'roundAdded');
+            t.equal(event.year, 2016);
+            t.equal(event.version, 2);
+            t.equal(event.payload.round, 1);
+            callback();
+        };
+        t.throws(() => {season.addRound(1)});
+        t.end();
+    });
 })();
