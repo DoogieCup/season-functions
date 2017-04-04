@@ -108,4 +108,51 @@
         t.throws(() => {season.addRound(1)});
         t.end();
     });
+
+    tape('Adding a fixture to a non-exitent season throws', (t) => {
+        var season = new Season(log);
+        t.throws(() => {season.addFixture(1, 'home', 'away')});
+        t.end();
+    });
+
+    tape('Adding a fixture raises an event', (t) => {
+        var events = e([
+            {name: 'seasonCreated', event:{year:2016}},
+            {name: 'roundAdded', event:{round:1}}]);
+        var season = new Season(log, events);
+        season.eventHandler = (event, callback) => {
+            t.equal(event.eventType, 'fixtureAdded');
+            t.equal(event.year, 2016);
+            t.equal(event.version, 3);
+            t.equal(event.payload.round, 1);
+            t.equal(event.payload.homeClubId, 'home');
+            t.equal(event.payload.awayClubId, 'away');
+            callback();
+        };
+        season.addFixture(1, 'home', 'away');
+        t.end();
+    });
+
+    tape('Adding a duplicate fixture raises an error', (t) => {
+        var events = e([
+            {name: 'seasonCreated', event:{year:2016}},
+            {name: 'roundAdded', event:{round:1}},
+            {name:'fixtureAdded', event:{
+                round:1,
+                homeClubId: 'home',
+                awayClubId: 'away'}
+            }]);
+        var season = new Season(log, events);
+        season.eventHandler = (event, callback) => {
+            t.equal(event.eventType, 'fixtureAdded');
+            t.equal(event.year, 2016);
+            t.equal(event.version, 4);
+            t.equal(event.payload.round, 1);
+            t.equal(event.payload.homeClubId, 'home');
+            t.equal(event.payload.awayClubId, 'away');
+            callback();
+        };
+        t.throws(() => {season.addFixture(1, 'home', 'away')});
+        t.end();
+    });
 })();

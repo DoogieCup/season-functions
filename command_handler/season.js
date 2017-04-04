@@ -68,6 +68,36 @@
             });
         }
 
+        addFixture(round, homeId, awayId){
+            /*
+            * This should use a state pattern
+            * as it's duplicated in multiple command handlers
+            */
+            this.log(`Adding fixture: ${round} ${homeId} ${awayId}`);
+            if (!this.Id){
+                throw Error('Cannot add a fixture to a non-existent round');
+            }
+
+            var existingFixture = this.findFixture(round, homeId, awayId);
+            this.log(`Existing fixture: ${existingFixture}`);
+            if (existingFixture){
+                throw Error('Found existing fixture!');
+            }
+
+            var event = {
+                eventType: 'fixtureAdded',
+                year: this.Id,
+                payload: {
+                    round: round,
+                    homeClubId: homeId,
+                    awayClubId: awayId
+                },
+                version: this.version + 1
+            };
+
+            this.eventHandler(event, (error) => {});
+        }
+
         apply(event) {
             var payload = JSON.parse(event.payload['_']);
             switch (event.eventType['_']){
@@ -113,6 +143,7 @@
         }
 
         applyFixtureAdded(event){
+            this.log(`Adding fixture ${event.round} ${event.homeClubId} ${event.awayClubId}`);
             var round = this.findRound(event.round);
             round.fixtures.push({homeClubId:event.homeClubId, 
                 awayClubId:event.awayClubId});
@@ -153,6 +184,18 @@
             if (!round && throwOnNotFound){throw Error(`Couldn't find round ${round}`);}
 
             return round;
+        }
+
+        findFixture(round, homeId, awayId){
+            this.log(`Finding fixture ${round} ${homeId} ${awayId}`);
+            var foundRound = this.findRound(round, false);
+            this.log(`Found round ${JSON.stringify(foundRound)}`);
+            var fixture = foundRound.fixtures.find(function (f){
+                return f.homeClubId === homeId
+                    && f.awayClubId === awayId
+            });
+
+            return fixture;
         }
     }
 })();
