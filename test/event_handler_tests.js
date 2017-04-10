@@ -13,4 +13,11 @@
         });
         t.end();
     });
+
+    tape('When new event, updates read model', (t) => {
+        var fetcher = sinon.stub().returns({
+        });
+        
+        t.end();
+    });
 })();

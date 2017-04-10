@@ -7,28 +7,7 @@
 
     var log = (msg) => {console.log(msg);}
 
-    function createEvent(name, event, version){
-        log(`Creating event: ${name} ${JSON.stringify(event)} Version ${version}`);
-        var newEvent = {};
-
-        newEvent.payload = {_: JSON.stringify(event)};
-        newEvent.eventType = {_: name};
-        newEvent.RowKey = {_: version};
-
-        return newEvent;
-    }
-
-    function e(events)
-    {
-        var version = 1;
-        var returns = [];
-        log(`Events ${JSON.stringify(events)}`);
-        events.forEach(function(event) {
-             returns.push(createEvent(event.name, event.event, version++));
-        }, this);
-
-        return returns;
-    }
+    var createEvents = require('./eventBuilder.js')(log);
 
     tape('Constructor does now throw', (t) => {
         t.doesNotThrow(() => {var season = new Season(log, []);});
@@ -36,7 +15,7 @@
     });
 
     tape('Season created', (t) => {
-        var events = e([{name:'seasonCreated', event:{year:2016}}]);
+        var events = createEvents([{name:'seasonCreated', event:{year:2016}}]);
         var season = new Season(log, events);
 
         t.equal(season.Id, 2016);
@@ -46,7 +25,7 @@
     });
 
     tape('Round added', (t) => {
-        var events = e([
+        var events = createEvents([
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}}]);
 
@@ -59,7 +38,7 @@
     });
 
     tape('Fixutre added', (t) => {
-        var events = e([
+        var events = createEvents([
             {name:'seasonCreated', event: {year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name: 'fixtureAdded', event:{
@@ -77,7 +56,7 @@
     });
 
     tape('Team submitted', (t) =>{
-        var events = e([
+        var events = createEvents([
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name:'fixtureAdded', event:{round:1, homeClubId:'home', awayClubId:'away'}},
@@ -98,7 +77,7 @@
     });
 
     tape('Round completed', (t) => {
-        var events = e([
+        var events = createEvents([
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name: 'roundCompleted', event:{round:1}}]);
@@ -110,7 +89,7 @@
     });
 
     tape('Round uncompleted', (t) => {
-        var events = e([
+        var events = createEvents([
             {name: 'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name:'roundCompleted', event:{round:1}},
@@ -123,7 +102,7 @@
     });
 
     tape('Stats imported', (t) =>{
-        var events = e([
+        var events = createEvents([
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name:'statsImported', event:{
