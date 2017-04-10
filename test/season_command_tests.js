@@ -31,7 +31,7 @@
     });
 
     tape('Creating a season that already exists throws', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name:'seasonCreated', event:{year:2016}}]);
         var season = new Season(log, events);
         t.throws(() => {season.create(2016);});
@@ -59,7 +59,7 @@
     });
 
     tape('Adding a round raises event', (t) => {
-        var events = createEvents([{name: 'seasonCreated', event:{year:2016}}]);
+        var events = createEvents(2016, [{name: 'seasonCreated', event:{year:2016}}]);
         var season = new Season(log, events);
         season.eventHandler = (event, callback) => {
             t.equal(event.eventType, 'roundAdded');
@@ -73,7 +73,7 @@
     });
 
     tape('Adding a duplicate round throws', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name: 'seasonCreated', event:{year:2016}},
             {name: 'roundAdded', event:{round:1}}]);
         var season = new Season(log, events);
@@ -95,7 +95,7 @@
     });
 
     tape('Adding a fixture raises an event', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name: 'seasonCreated', event:{year:2016}},
             {name: 'roundAdded', event:{round:1}}]);
         var season = new Season(log, events);
@@ -113,7 +113,7 @@
     });
 
     tape('Adding a duplicate fixture raises an error', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name: 'seasonCreated', event:{year:2016}},
             {name: 'roundAdded', event:{round:1}},
             {name:'fixtureAdded', event:{

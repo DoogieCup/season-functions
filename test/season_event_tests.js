@@ -15,7 +15,7 @@
     });
 
     tape('Season created', (t) => {
-        var events = createEvents([{name:'seasonCreated', event:{year:2016}}]);
+        var events = createEvents(2016, [{name:'seasonCreated', event:{year:2016}}]);
         var season = new Season(log, events);
 
         t.equal(season.Id, 2016);
@@ -25,7 +25,7 @@
     });
 
     tape('Round added', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}}]);
 
@@ -38,7 +38,7 @@
     });
 
     tape('Fixutre added', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name:'seasonCreated', event: {year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name: 'fixtureAdded', event:{
@@ -56,7 +56,7 @@
     });
 
     tape('Team submitted', (t) =>{
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name:'fixtureAdded', event:{round:1, homeClubId:'home', awayClubId:'away'}},
@@ -77,7 +77,7 @@
     });
 
     tape('Round completed', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name: 'roundCompleted', event:{round:1}}]);
@@ -89,7 +89,7 @@
     });
 
     tape('Round uncompleted', (t) => {
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name: 'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name:'roundCompleted', event:{round:1}},
@@ -102,7 +102,7 @@
     });
 
     tape('Stats imported', (t) =>{
-        var events = createEvents([
+        var events = createEvents(2016, [
             {name:'seasonCreated', event:{year:2016}},
             {name:'roundAdded', event:{round:1}},
             {name:'statsImported', event:{

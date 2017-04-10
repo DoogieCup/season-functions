@@ -12,7 +12,7 @@
                 events.forEach(function(event) {
                     this.log(`Received event ${JSON.stringify(event)}`);
                     this.apply(event);
-                    this.version = event.RowKey['_'];
+                    this.version = parseInt(event.RowKey['_'].replace(/^0*/g, ''));
                 }, this);
             }
         };
