@@ -25,6 +25,9 @@
 
             var finalVersion = currentVersion;
 
+            if (!eventsToProcess) {
+                throw Error("Couldn't find any events to process");
+            }
             eventsToProcess.forEach(function(element) {
                 if (element.eventType['_'] !== 'statsImported'){
                     finalVersion++;

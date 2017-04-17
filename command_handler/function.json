@@ -2,7 +2,7 @@
   "disabled": false,
   "bindings": [
     {
-      "name": "input",
+      "name": "event",
       "type": "manualTrigger",
       "direction": "in"
     }
