@@ -28,7 +28,7 @@
         };
 
         var writer = (round, playerId, stat) => {
-
+            context.log(`Asked to write ${round} ${playerId} ${JSON.stringify(stat)}`);
         };
         
         var versionWriter = (version) => {};

@@ -2,6 +2,7 @@
 (function(){
     var tape = require('tape');
     var sinon = require('sinon');
+    var Promise = require('promise');
 
     var log = (msg) => {console.log(msg);}
 
@@ -57,7 +58,11 @@
                 ]}},
                 {name:'roundAdded', event:{round:2}}]);
 
-        var fetcher = sinon.stub().returns(events);
+        
+        var fetcherPromise = new Promise((accept, reject)=>{
+            accept(events);
+        });
+        var fetcher = sinon.stub().returns(fetcherPromise);
 
         var versionWriter = sinon.spy();
 
@@ -69,13 +74,12 @@
 
         var handler = new EventHandler(log, fetcher, writer, versionWriter);
 
-        handler.process(0, newEvent);
-
-        t.assert(fetcher.calledWith('2016', 0, 4));
-        t.assert(versionWriter.calledWith('2016', 4));
-        t.assert(writer.withArgs('201601', 'first', firstStat).calledOnce);
-        t.assert(writer.withArgs('201601', 'second', secondStat).calledOnce);
-
-        t.end();
+        handler.process(0, newEvent).then(()=>{
+            t.assert(fetcher.calledWith('2016', 0, 4));
+            t.assert(versionWriter.calledWith('2016', 4));
+            t.assert(writer.withArgs('201601', 'first', firstStat).calledOnce);
+            t.assert(writer.withArgs('201601', 'second', secondStat).calledOnce);
+            t.end();
+        });
     });
 })();
