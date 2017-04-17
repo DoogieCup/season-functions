@@ -2,6 +2,7 @@
 
 (function(){
     var keyConverter = require('../utils/keyConverter.js');
+    var Promise = require('promise');
 
     module.exports = class{
         constructor(log, eventFetcher, writer, versionWriter){
@@ -25,10 +26,12 @@
 
             var finalVersion = currentVersion;
 
-            if (!eventsToProcess) {
-                throw Error("Couldn't find any events to process");
-            }
-            eventsToProcess.forEach(function(element) {
+            eventsToProcess.then((events => {
+                if (!events) {
+                    throw Error("Couldn't find any events to process");
+                }
+                this.log(`Found events ${JSON.stringify(events)}`);
+                events.forEach(function(element) {
                 if (element.eventType['_'] !== 'statsImported'){
                     finalVersion++;
                     return;
@@ -43,6 +46,11 @@
                     this.writer(keyConverter.toRoundKey(year, round), stat.playerId, stat);
                 }, this);
             }, this);
+
+            })).catch((err) => {
+                this.log(`Failed to fetch events ${err}`);
+            });            
+            
             this.log(`VersionWriter ${year} ${finalVersion}`);
             this.versionWriter(year, finalVersion);
         };

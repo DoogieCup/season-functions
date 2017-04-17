@@ -3,6 +3,7 @@
     var Handler = require('./handler.js');
     var azure = require('azure-storage');
     var keyConverter = require('../utils/keyConverter.js');
+    var Promise = require('promise');
 
     module.exports = function(context, event) {
 
@@ -16,15 +17,14 @@
             var query = new azure.TableQuery()
                 .where(q);
 
-            tableService.queryEntities('SeasonEvents', query, null, function(error, result, response) {
-                if (error) {
-                    throw Error(`Error querying events: ${JSON.stringify(error)}`);
-                }
-
-                context.log(`Event result ${JSON.stringify(result)}`);
-
-                return result.entries;
+            var result = new Promise((fulfill, reject) => {
+                tableService.queryEntities('SeasonEvents', query, null, function(err, result){
+                    if (err){reject(err);}
+                    fulfill(result.entries);
+                });
             });
+            
+            return result;
         };
 
         var writer = (round, playerId, stat) => {
