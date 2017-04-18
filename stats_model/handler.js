@@ -49,7 +49,9 @@
                         }, this);
                     }, this);
                     this.log(`VersionWriter ${year} ${finalVersion}`);
-                    this.versionWriter(year, finalVersion);
+                    this.versionWriter(year, finalVersion).catch((err) => {
+                        this.log(`Failed to write the version: ${err}`);
+                    });
                     accept();
                     })).catch((err) => {
                         this.log(`Failed to fetch events ${err}`);
