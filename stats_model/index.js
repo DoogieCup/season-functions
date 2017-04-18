@@ -29,6 +29,29 @@
 
         var writer = (round, playerId, stat) => {
             context.log(`Asked to write ${round} ${playerId} ${JSON.stringify(stat)}`);
+            var result = (new Promise((fulfill, reject)=>{
+                tableService.createTableIfNotExists('StatsReadModels', function(error, result, response) {
+                    if (error) {reject(error);}
+                    context.log(`Ensured StatsReadModels table, result ${JSON.stringify(result)}`);
+                    fulfill();
+                });
+            })).then(() => {return new Promise((fulfill, reject) => {
+                var entity = {
+                    PartitionKey: entGen.String(String(playerId)),
+                    RowKey: entGen.String(String(round)),
+                    Stat: JSON.stringify(stat)
+                };
+
+                tableService.insertEntity('StatsReadModels', entity, function(error, result, response) {
+                    if (error) {
+                        reject(error);
+                    }
+                    context.log(`New stat written ${playerId} ${round} ${stat}`);
+                    fulfill();
+                });
+            })});
+
+            return result;
         };
         
         var versionWriter = (year, version) => {

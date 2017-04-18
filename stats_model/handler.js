@@ -45,7 +45,9 @@
                         finalVersion++;
                         
                         payload.stats.forEach(function(stat){
-                            this.writer(keyConverter.toRoundKey(year, round), stat.playerId, stat);
+                            this.writer(keyConverter.toRoundKey(year, round), stat.playerId, stat).catch((err)=>{
+                                this.log(`Failed to write the read model: ${err}`);
+                            });
                         }, this);
                     }, this);
                     this.log(`VersionWriter ${year} ${finalVersion}`);
