@@ -5,11 +5,11 @@
     var keyConverter = require('../utils/keyConverter.js');
     var Promise = require('promise');
     let connectionString = process.env.AzureWebJobsDashboard;
-    let tableService = azure.createTableService(connectionString);
     let entGen = azure.TableUtilities.entityGenerator;
 
     module.exports = function(context, event) {
         var eventFetcher = (id, knownVersion, newVersion) => {
+            let tableService = azure.createTableService(connectionString);
             context.log(`Executing event fetcher Id ${id} Known Version ${knownVersion} new version ${newVersion}`);
             
             var q = `PartitionKey eq '${String(id)}' and RowKey gt '${keyConverter.toVersionKey(knownVersion)}' and RowKey le '${keyConverter.toVersionKey(newVersion)}'`;
@@ -28,6 +28,7 @@
         };
 
         var writer = (round, playerId, stat) => {
+            var tableService = azure.createTableService(connectionString);
             context.log(`Asked to write ${round} ${playerId} ${JSON.stringify(stat)}`);
             var result = (new Promise((fulfill, reject)=>{
                 tableService.createTableIfNotExists('StatsReadModels', function(error, result, response) {
@@ -55,7 +56,7 @@
         };
         
         var versionWriter = (year, version) => {
-            
+            let tableService = azure.createTableService(connectionString);
             var result = (new Promise((fulfill, reject)=>{
                 tableService.createTableIfNotExists('StatsReadVersion', function(error, result, response) {
                     if (error) {reject(error);}
