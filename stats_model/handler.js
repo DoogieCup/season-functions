@@ -43,8 +43,9 @@
                         
                         var round = payload.round;
                         finalVersion++;
-                        
+                        this.log(`About to process ${payload.stats.length} stats`);
                         payload.stats.forEach(function(stat){
+                            this.log(`Processing ${keyConverter.toRoundKey(year, round)}, ${stat.playerId}`)
                             this.writer(keyConverter.toRoundKey(year, round), stat.playerId, stat).catch((err)=>{
                                 this.log(`Failed to write the read model: ${err}`);
                             });
