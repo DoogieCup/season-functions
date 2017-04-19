@@ -93,6 +93,12 @@
             writer,
             versionWriter);
 
-        handler.process(0, event);
+        handler.process(0, event)
+            .then(()=>{
+                context.done(null);
+            }).catch((err)=>{
+                context.log(`Process faulted ${JSON.stringify(err)}`);
+                context.done(err);
+            });
     }
 })();
