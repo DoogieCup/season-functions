@@ -64,9 +64,9 @@
         });
         var fetcher = sinon.stub().returns(fetcherPromise);
 
-        var versionWriter = sinon.spy();
+        var versionWriter = sinon.stub().returns(new Promise((accept, reject)=>{accept()}));
 
-        var writer = sinon.spy();
+        var writer = sinon.stub().returns(new Promise((accept, reject)=>{accept()}));
         writer.withArgs(201601, 'first', firstStat);
         writer.withArgs(201601, 'first', secondStat);
 
