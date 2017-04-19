@@ -54,7 +54,7 @@
                     if (error) {
                         reject(error);
                     }
-                    context.log(`New stat written ${playerId} ${round} ${stat}`);
+                    context.log(`New stat written ${playerId} ${round} ${JSON.stringify(stat)}`);
                     fulfill();
                 });
             })});
