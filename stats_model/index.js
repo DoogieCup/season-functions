@@ -6,6 +6,7 @@
     var Promise = require('promise');
     let connectionString = process.env.AzureWebJobsDashboard;
     let entGen = azure.TableUtilities.entityGenerator;
+    var readTableCreated = false;
 
     module.exports = function(context, event) {
         var eventFetcher = (id, knownVersion, newVersion) => {
@@ -31,9 +32,15 @@
             var tableService = azure.createTableService(connectionString);
             context.log(`Asked to write ${round} ${playerId} ${JSON.stringify(stat)}`);
             var result = (new Promise((fulfill, reject)=>{
+                if (readTableCreated){
+                    fulfill();
+                    return;
+                }
+
                 tableService.createTableIfNotExists('StatsReadModels', function(error, result, response) {
                     if (error) {reject(error);}
                     context.log(`Ensured StatsReadModels table, result ${JSON.stringify(result)}`);
+                    readTableCreated = true;
                     fulfill();
                 });
             })).then(() => {return new Promise((fulfill, reject) => {
