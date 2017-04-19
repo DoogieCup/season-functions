@@ -44,12 +44,21 @@
                         var round = payload.round;
                         finalVersion++;
                         this.log(`About to process ${payload.stats.length} stats`);
+
+                        var promise = new Promise((accept, reject) => {
+                            accept();
+                        });
+
                         payload.stats.forEach(function(stat){
                             this.log(`Processing ${keyConverter.toRoundKey(year, round)}, ${stat.playerId}`)
-                            this.writer(keyConverter.toRoundKey(year, round), stat.playerId, stat)
+                            promise.then(() => {
+                                this.writer(keyConverter.toRoundKey(year, round), stat.playerId, stat)
                                 .catch((err)=>{
                                     this.log(`Failed to write the read model: ${err}`);
                                 });
+                            }).catch((err)=>{
+                                    this.log(`Read model chain failed: ${err}`);
+                                });;
                         }, this);
                     }, this);
                     this.log(`VersionWriter ${year} ${finalVersion}`);
